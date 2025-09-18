@@ -14,6 +14,7 @@ const NAV_BAR: &str = r#"
     <a href="/index.html">Home</a>
     <a href="/projects.html">Projects</a>
     <a href="/blog.html">Blog</a>
+    <a href="/quotes.html">Quotes</a>
 </header>"#;
 
 const FOOTER: &str = r#"
@@ -35,8 +36,11 @@ fn md_parse(input: &str) -> String {
     let mut link_title: Option<String> = None;
     let mut link_link: Option<String> = None;
 
+    // TODO: make this generic?
     let mut in_header = false;
     let mut in_inline_code = false;
+    let mut in_italic = false;
+    let mut in_block_quote = false;
 
     let mut iter = input.chars().peekable();
     while let Some(char) = iter.next() {
@@ -72,10 +76,21 @@ fn md_parse(input: &str) -> String {
                 content.push_str("</h1>");
                 in_header = false;
             }
+            if in_block_quote {
+                content.push_str("</blockquote>");
+                in_block_quote = false;
+            }
+
             if next == Some(&'\n') {
                 content.push_str("</br></br>");
+                // iter.next();
+            } else if next == Some(&'>') {
+                content.push_str(r#"<blockquote class="block_quote">"#);
                 iter.next();
+                in_block_quote = true;
             }
+
+            // content.push_str("</br>");
             content.push('\n');
         } else if char == '[' {
             link_title = Some(String::new());
@@ -89,6 +104,14 @@ fn md_parse(input: &str) -> String {
             } else {
                 content.push_str(r#"<pre class="inline_code">"#);
                 in_inline_code = true;
+            }
+        } else if char == '_' {
+            if in_italic {
+                content.push_str("</i>");
+                in_italic = false;
+            } else {
+                content.push_str("<i>");
+                in_italic = true;
             }
         } else {
             content.push_str(&escape_char(char));
@@ -115,7 +138,6 @@ fn md_parse(input: &str) -> String {
         </html>"#
     );
 
-    // println!("{output}");
     output
 }
 
@@ -279,7 +301,7 @@ fn main() -> io::Result<()> {
         fs::write(destination, html)?;
     }
 
-    // THIS FILE FOR FUN!
+    // This file for fun!
     {
         let path = Path::new(out_dir).join("self_text.rs");
         let self_text = fs::read_to_string(self_dir)?;

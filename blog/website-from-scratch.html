@@ -15,31 +15,40 @@
     <a href="/index.html">Home</a>
     <a href="/projects.html">Projects</a>
     <a href="/blog.html">Blog</a>
+    <a href="/quotes.html">Quotes</a>
 </header>
                         <div class="content">
                             <h1 class="md_head_1"> Making my Website from Scratch</h1></br></br>
+
 For hosting this website, I am using GitHub pages because it is free.
 I could write the HTML manually, but this makes it really hard to update the style of my site.
 So I decided to write a Markdown generator. I used rust for this, because I have not done much with <pre class="inline_code">std::fs</pre>.</br></br>
+
 I made a single rust file, which you can download <a href="/self_text.rs">here</a>. It works, but it's not pretty.
 I felt like I was fighting the type system for <pre class="inline_code">Path</pre> a little bit, but the main issue was error handling in rust.
 The rust standard library borrowed a lot from functional languages. So a lot of functions either return <pre class="inline_code">Option&lt;T&gt;</pre>. or <pre class="inline_code">io::Result&lt;T&gt;</pre>.
 In this simple scripting file, if one of these functions fails I want to crash the program.</br></br>
+
 I have two main options:</br></br>
+
 1. I could use <pre class="inline_code">.unwrap()</pre>. This is usually disencouraged because it panics on a <pre class="inline_code">None</pre>/<pre class="inline_code">Err</pre> value, which is a bad thing on a server.
 But in the case of a site generator, this is what I would do anyway.
 The issue with this approach is that it makes the code larger and causes a lot of visual clutter.</br></br>
+
 2. The other option is using the question mark operator (<pre class="inline_code">?</pre>).
 Instead of panicking when encountering an <pre class="inline_code">None</pre>/<pre class="inline_code">Err</pre> it returns from the current function.
 The problem with this is some functions in <pre class="inline_code">std::fs</pre> return <pre class="inline_code">Option&lt;T&gt;</pre> and some functions return <pre class="inline_code">io::Result&lt;T&gt;</pre>.
 And I need to choose one of them for the return type of main.
 The other problem is that the implicit returning of the question mark operator removes line number information when a panic happens, which makes debugging unnecessarily annoying. </br></br>
+
 I'm still not sure what is better between these two options, currently I'm using a mix of both approaches.</br></br>
+
 Another thing is the <a href="https://doc.rust-lang.org/rust-by-example/std/str.html">Rust multi-line string literals</a>. They actually work in an interesting way,
 the amount of <pre class="inline_code">#</pre>s that you put after the <pre class="inline_code">r</pre> changes the ending delimeter, which means if you have collisions inside the string, you can just add more <pre class="inline_code">#</pre>s.
 This is a slightly silly way of solving the problem of multi-line string literals, but I suppose it works.
 Anyway, <a href="https://ziglang.org/documentation/master/#Multiline-String-Literals">I think Zig does this better</a>, because you're less likely to add unintentional line breaks or tabs to the string.
 But in my case with HTML, random line breaks or tabs getting in the strings doesn't really matter.</br></br>
+
 So overall, it works, and I'm happy that it is a single file, but If I do this again I will probably use Python instead.
 
                         </div>
