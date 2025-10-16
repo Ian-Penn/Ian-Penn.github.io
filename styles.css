@@ -60,7 +60,9 @@ a:visited {
 
 .md_head_1 {
 	margin-block-end: 0px;
+	padding-bottom: 5px;
 	font-size: 1.8em;
+	border-bottom: 1px solid gray
 }
 
 .inline_code {
@@ -75,4 +77,5 @@ a:visited {
 
 footer {
 	border-top: 2px solid gray;
+	padding-bottom: 50px;
 }

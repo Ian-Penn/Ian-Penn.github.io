@@ -5,7 +5,7 @@ use std::path::Path;
 use std::{fs, io};
 
 const HEAD: &str = r#"
-<link href="/css.css" rel="stylesheet" type="text/css">
+<link href="/styles.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 "#;
 
